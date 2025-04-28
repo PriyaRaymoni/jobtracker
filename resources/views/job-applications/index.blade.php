@@ -1,39 +1,57 @@
+<?php
+$currentStatus = $statusFilter ?? 'All'; // Default to 'All' if no filter is set
+$statuses = ['All', 'Applied', 'Interview', 'Offer', 'Rejected'];
+$currentSearch = $searchTerm ?? ''; // Get current search term
+
+$baseClasses = 'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors';
+$activeClasses = 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100';
+$inactiveClasses = 'bg-gray-100 text-gray-700 hover:bg-gray-200';
+?>
 <x-app-layout>
     <div class="py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
               <!-- Filters and Search -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-xl mb-8">
                 <div class="p-6">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <!-- Status Filters -->
-                        <div class="flex flex-wrap gap-2">
-                            <button class="px-3 py-1.5 bg-indigo-50 text-indigo-700 rounded-lg text-sm font-medium hover:bg-indigo-100 transition-colors">
-                                All
-                            </button>
-                            <button class="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors">
-                                Applied
-                            </button>
-                            <button class="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors">
-                                Interview
-                            </button>
-                            <button class="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors">
-                                Offer
-                            </button>
-                            <button class="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors">
-                                Rejected
-                            </button>
-                        </div>
-
-                        <!-- Search Box -->
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
-                                </svg>
+                    <form method="GET" action="{{ route('job-applications.index') }}" id="filter-search-form">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                            <!-- Status Filters -->
+                            <div class="flex flex-wrap gap-2">
+                                @foreach ($statuses as $status)
+                                    @php
+                                        // Build the query parameters for the link
+                                        $queryParams = [];
+                                        if ($status != 'All') {
+                                            $queryParams['status'] = $status;
+                                        }
+                                        if ($currentSearch) {
+                                            $queryParams['search'] = $currentSearch;
+                                        }
+                                    @endphp
+                                    <a href="{{ route('job-applications.index', $queryParams) }}"
+                                       class="{{ $baseClasses }} {{ $currentStatus == $status ? $activeClasses : $inactiveClasses }}">
+                                        {{ $status }}
+                                    </a>
+                                @endforeach
                             </div>
-                            <input type="text" placeholder="Search applications..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg w-full md:w-64 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+
+                            <!-- Search Box -->
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <!-- Hidden input to preserve status filter when searching -->
+                                @if($currentStatus != 'All')
+                                    <input type="hidden" name="status" value="{{ $currentStatus }}">
+                                @endif
+                                <input type="text" name="search" placeholder="Search applications..." value="{{ $currentSearch }}" class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg w-full md:w-64 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                <!-- Optional: Add a submit button if needed, or rely on Enter key -->
+                                <!-- <button type="submit" class="absolute right-0 top-0 mt-2 mr-2 ...">Search</button> -->
+                            </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
 

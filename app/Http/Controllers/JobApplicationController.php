@@ -18,7 +18,7 @@ class JobApplicationController extends Controller
         $jobApplications = JobApplication::where('user_id', Auth::id())->get();
         $totalApplications = $jobApplications->count();
         $appliedCount = $jobApplications->where('status', 'Applied')->count();
-        $interviewingCount = $jobApplications->where('status', 'Interviewing')->count();
+        $interviewingCount = $jobApplications->where('status', 'Interview')->count();
         $offerCount = $jobApplications->where('status', 'Offer')->count();
         $rejectedCount = $jobApplications->where('status', 'Rejected')->count();
 
@@ -28,10 +28,35 @@ class JobApplicationController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $jobApplications = JobApplication::where('user_id', Auth::id())->get();
-        return view('job-applications.index', compact('jobApplications'));
+        $statusFilter = $request->query('status');
+        $searchTerm = $request->query('search'); // Get search term
+
+        $query = JobApplication::where('user_id', Auth::id());
+
+        // Apply status filter
+        if ($statusFilter && $statusFilter !== 'All') {
+            if ($statusFilter === 'Interview') {
+                $query->whereIn('status', ['Interview', 'Interviewing']);
+            } else {
+                $query->where('status', $statusFilter);
+            }
+        }
+
+        // Apply search filter
+        if ($searchTerm) {
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('job_title', 'like', "%{$searchTerm}%")
+                  ->orWhere('company_name', 'like', "%{$searchTerm}%")
+                  ->orWhere('location', 'like', "%{$searchTerm}%");
+            });
+        }
+
+        $jobApplications = $query->orderBy('created_at', 'desc')->get();
+
+        // Pass both filters to the view
+        return view('job-applications.index', compact('jobApplications', 'statusFilter', 'searchTerm'));
     }
 
     /**

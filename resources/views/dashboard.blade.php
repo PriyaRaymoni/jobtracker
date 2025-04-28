@@ -32,7 +32,7 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-xl p-6">
                     <p class="text-sm font-medium text-gray-500">Interviews</p>
                     <p class="text-2xl font-bold text-indigo-600 mt-1">
-                        {{ $jobApplications->where('status', 'Interviewing')->count() }}</p>
+                        {{ $jobApplications->where('status', 'Interview')->count() }}</p>
                 </div>
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-xl p-6">
                     <p class="text-sm font-medium text-gray-500">Offers</p>
@@ -141,7 +141,7 @@
                                                                     
                                                                     @php
                                                                         // Define the stages and their order
-                                                                        $stages = ['Applied', 'Interviewing', 'Offer', 'Accepted'];
+                                                                        $stages = ['Applied', 'Interview', 'Offer', 'Accepted'];
                                                                         $currentStage = $jobApplication->status;
                                                                         
                                                                         if ($currentStage == 'Rejected') {
@@ -226,7 +226,7 @@
                             label: 'Number of Applications',
                             data: [
                                 {{ $jobApplications->where('status', 'Applied')->count() }},
-                                {{ $jobApplications->where('status', 'Interviewing')->count() }},
+                                {{ $jobApplications->where('status', 'Interview')->count() }},
                                 {{ $jobApplications->where('status', 'Rejected')->count() }},
                                 {{ $jobApplications->where('status', 'Offer')->count() }}
                             ],
