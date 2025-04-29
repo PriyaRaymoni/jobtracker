@@ -1,42 +1,25 @@
 <x-app-layout>
-    {{-- <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <h2 class="font-bold text-2xl text-gray-900 leading-tight">
-                {{ __('My Applications') }}
-            </h2>
-            <a href="{{ route('job-applications.create') }}"
-                class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-lg font-medium text-sm text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150 shadow-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd"
-                        d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-                        clip-rule="evenodd" />
-                </svg>
-                Add Application
-            </a>
-        </div>
-    </x-slot> --}}
-
     <div class="py-10">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <!-- Stats Overview -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-xl p-6">
-                    <p class="text-sm font-medium text-gray-500">Total Applications</p>
-                    <p class="text-2xl font-bold text-gray-900 mt-1">{{ $jobApplications->count() }}</p>
+                <div class="bg-[#ff4d003f] border-gray-900 border-2 backdrop-blur-xl overflow-hidden shadow-sm sm:rounded-xl p-6">
+                    <p class="text-xl text-gray-700 hover:text-black font-extrabold">Total Applications</p>
+                    <p class="text-3xl font-bold text-[#ff4d00c8] mt-1">{{ $jobApplications->count() }}</p>
                 </div>
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-xl p-6">
-                    <p class="text-sm font-medium text-gray-500">Applied This Week</p>
-                    <p class="text-2xl font-bold text-green-600 mt-1">
+                <div class="bg-[#08f65f34] border-gray-900 border-2 backdrop-blur-xl overflow-hidden shadow-sm sm:rounded-xl p-6">
+                    <p class="text-xl text-gray-700 hover:text-black font-extrabold">Applied This Week</p>
+                    <p class="text-3xl font-bold text-green-600 mt-1">
                         {{ $jobApplications->where('created_at', '>=', now()->subWeek())->count() }}</p>
                 </div>
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-xl p-6">
-                    <p class="text-sm font-medium text-gray-500">Interviews</p>
-                    <p class="text-2xl font-bold text-indigo-600 mt-1">
+                <div class="bg-[#6978cf4c] border-gray-900 border-2 backdrop-blur-xl overflow-hidden shadow-sm sm:rounded-xl p-6">
+                    <p class="text-xl text-gray-700 hover:text-black font-extrabold">Interviews</p>
+                    <p class="text-4xl font-bold text-indigo-600 mt-1">
                         {{ $jobApplications->where('status', 'Interview')->count() }}</p>
                 </div>
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-xl p-6">
-                    <p class="text-sm font-medium text-gray-500">Offers</p>
-                    <p class="text-2xl font-bold text-purple-600 mt-1">
+                <div class="bg-[#db7bf650] border-gray-900 border-2 backdrop-blur-xl overflow-hidden shadow-sm sm:rounded-xl p-6">
+                    <p class="text-xl text-gray-700 hover:text-black font-extrabold">Offers</p>
+                    <p class="text-3xl font-bold text-purple-600 mt-1">
                         {{ $jobApplications->where('status', 'Offer')->count() }}</p>
                 </div>
             </div>
@@ -44,7 +27,7 @@
             <!-- Charts Section -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
                 <!-- Application Status Chart -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-xl p-6">
+                <div class="bg-[#ffffff6d] border border-gray-900 overflow-hidden shadow-sm sm:rounded-xl p-6">
                     <h3 class="font-semibold text-lg text-gray-800 leading-tight mb-4">Application Status</h3>
                     <div class="h-64">
                         <canvas id="statusChart"></canvas>
@@ -52,7 +35,7 @@
                 </div>
 
                 <!-- Applications Over Time Chart -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-xl p-6">
+                <div class="bg-[#ffffff6d] border border-gray-900 overflow-hidden shadow-sm sm:rounded-xl p-6">
                     <h3 class="font-semibold text-lg text-gray-800 leading-tight mb-4">Applications Over Time</h3>
                     <div class="h-64">
                         <canvas id="timelineChart"></canvas>
@@ -61,7 +44,7 @@
             </div>
 
             <!-- Applications Section -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-xl p-6">
+            <div class="bg-[#ffffff6d] border border-gray-900 overflow-hidden shadow-sm sm:rounded-xl p-6">
                 <h3 class="font-semibold text-xl text-gray-800 leading-tight mb-6">Recent Applications</h3>
 
                 @if($jobApplications->isEmpty())
@@ -140,36 +123,41 @@
                                                                     <span>Application Progress</span>
                                                                     
                                                                     @php
-                                                                        // Define the stages and their order
-                                                                        $stages = ['Applied', 'Interview', 'Offer', 'Accepted'];
-                                                                        $currentStage = $jobApplication->status;
-                                                                        
-                                                                        if ($currentStage == 'Rejected') {
-                                                                            $progressText = 'Rejected';
-                                                                            $progressColor = 'bg-red-500';
-                                                                            $progress = 100; // Show full red bar for rejected
-                                                                        } else {
-                                                                            // Find current stage index
-                                                                            $stageIndex = array_search($currentStage, $stages);
-                                                                            // Make sure $stageIndex is not false and is converted to integer
-                                                                            $stageIndex = $stageIndex !== false ? (int)$stageIndex : 0;
-                                                                            
-                                                                            // Calculate progress - make sure we're using proper math
-                                                                            $progress = ($stageIndex / (count($stages) - 1)) * 100;
-                                                                            
-                                                                            // Ensure progress is a number
-                                                                            $progress = is_numeric($progress) ? $progress : 0;
-                                                                            
-                                                                            // Determine color
-                                                                            if ($currentStage == 'Applied') $progressColor = 'bg-blue-500';
-                                                                            elseif ($currentStage == 'Interview') $progressColor = 'bg-indigo-500';
-                                                                            elseif ($currentStage == 'Offer') $progressColor = 'bg-purple-500';
-                                                                            elseif ($currentStage == 'Accepted') $progressColor = 'bg-green-500';
-                                                                            else $progressColor = 'bg-gray-500';
-                                                                        }
-                                                                        
-                                                                        // Debug info - add this temporarily to see what's happening
-                                                                        // echo "<!-- Stage: $currentStage, Index: $stageIndex, Progress: $progress -->";
+        // Define the stages and their order
+        $stages = ['Applied', 'Interview', 'Offer', 'Accepted'];
+        $currentStage = $jobApplication->status;
+
+        if ($currentStage == 'Rejected') {
+            $progressText = 'Rejected';
+            $progressColor = 'bg-red-500';
+            $progress = 100; // Show full red bar for rejected
+        } else {
+            // Find current stage index
+            $stageIndex = array_search($currentStage, $stages);
+            // Make sure $stageIndex is not false and is converted to integer
+            $stageIndex = $stageIndex !== false ? (int) $stageIndex : 0;
+
+            // Calculate progress - make sure we're using proper math
+            $progress = ($stageIndex / (count($stages) - 1)) * 100;
+
+            // Ensure progress is a number
+            $progress = is_numeric($progress) ? $progress : 0;
+
+            // Determine color
+            if ($currentStage == 'Applied')
+                $progressColor = 'bg-blue-500';
+            elseif ($currentStage == 'Interview')
+                $progressColor = 'bg-indigo-500';
+            elseif ($currentStage == 'Offer')
+                $progressColor = 'bg-purple-500';
+            elseif ($currentStage == 'Accepted')
+                $progressColor = 'bg-green-500';
+            else
+                $progressColor = 'bg-gray-500';
+        }
+
+        // Debug info - add this temporarily to see what's happening
+        // echo "<!-- Stage: $currentStage, Index: $stageIndex, Progress: $progress -->";
                                                                     @endphp
                                                                     
                                                                     <span>{{ $currentStage }}</span>
@@ -273,17 +261,17 @@
                     const dates = [];
                     const counts = [
                         @php
-                            // Pre-calculate the counts for the last 7 days in PHP
-                            for ($i = 6; $i >= 0; $i--) {
-                                $date = now()->subDays($i)->format('Y-m-d');
-                                $count = $jobApplications->filter(function ($application) use ($date) {
-                                    return $application->created_at->format('Y-m-d') === $date;
-                                })->count();
+// Pre-calculate the counts for the last 7 days in PHP
+for ($i = 6; $i >= 0; $i--) {
+    $date = now()->subDays($i)->format('Y-m-d');
+    $count = $jobApplications->filter(function ($application) use ($date) {
+        return $application->created_at->format('Y-m-d') === $date;
+    })->count();
 
-                                echo $count;
-                                if ($i > 0)
-                                    echo ', ';
-                            }
+    echo $count;
+    if ($i > 0)
+        echo ', ';
+}
                         @endphp
         ];
 
